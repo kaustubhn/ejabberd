@@ -355,7 +355,7 @@ mod_opt_type(via) ->
                  end))(L);
          (U) ->
               (econf:and_then(
-                 econf:url([tls, tcp, udp]),
+                 econf:url(["tls", "tcp", "udp"]),
                  fun(URI) ->
                          {ok, Type, Host, Port, _} =
                             misc:uri_parse(URI),

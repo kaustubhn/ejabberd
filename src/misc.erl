@@ -60,11 +60,19 @@ uri_parse(URL) when is_binary(URL) ->
     uri_parse(binary_to_list(URL));
 uri_parse(URL) ->
     {ok, {Scheme, _UserInfo, Host, Port, Path, _Query}} = http_uri:parse(URL),
-    {ok, Scheme, Host, Port, Path}.
+    {ok, atom_to_list(Scheme), Host, Port, Path}.
 -else.
 uri_parse(URL) ->
-    #{scheme:=Scheme,host:=Host,port:=Port,path:=Path} = uri_string:parse(URL),
-    {ok, Scheme, Host, Port, Path}.
+    case re:run(URL, "@([A-Z]+)@", [{capture, all, list}]) of
+        nomatch ->
+            #{scheme:=Scheme,host:=Host,port:=Port,path:=Path} = uri_string:parse(URL),
+            {ok, Scheme, Host, Port, Path};
+        {match, [AtMacroAt, Macro]} ->
+            URL2 = re:replace(URL, "@[A-Z]+@", Macro),
+            #{scheme:=Scheme,host:=Host,port:=Port,path:=Path} = uri_string:parse(URL2),
+            Host = Macro,
+            {ok, Scheme, AtMacroAt, Port, Path}
+    end.
 -endif.
 
 -ifdef(USE_OLD_CRYPTO_HMAC).
@@ -350,7 +358,8 @@ try_url(URL0) ->
 	_ -> URL0
     end,
     case uri_parse(URL) of
-	{ok, {Scheme, _, _, _, _, _}} when Scheme /= http, Scheme /= https ->
+	{ok, {Scheme, _, _, _, _, _}}
+          when Scheme /= "http", Scheme /= "https" ->
 	    ?ERROR_MSG("Unsupported URI scheme: ~ts", [URL]),
 	    erlang:error(badarg);
 	{ok, {_, _, Host, _, _, _}} when Host == ""; Host == <<"">> ->

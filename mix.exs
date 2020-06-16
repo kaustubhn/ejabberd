@@ -105,7 +105,8 @@ defmodule Ejabberd.Mixfile do
      {:yconf, git: "https://github.com/processone/yconf", ref: "60e431a1f1e4504ccc9e329a9202b88c26b341ae"},
      {:jose, "~> 1.8"},
      {:idna, "~> 6.0"},
-     {:p1_acme, "~> 1.0"}]
+     {:p1_acme, "~> 1.0"},
+     {:dependency, "~> 1.0", override: true}]
     ++ cond_deps()
   end
 

@@ -83,7 +83,7 @@ defmodule Ejabberd.Mixfile do
 
   defp deps do
     [{:lager, "~> 3.6.0"},
-     {:p1_utils, "~> 1.0"},
+     {:p1_utils, "~> 1.0", override: true},
      {:fast_xml, "~> 1.1"},
      {:xmpp, ">= 1.4.6"},
      {:cache_tab, "~> 1.0"},
@@ -105,8 +105,7 @@ defmodule Ejabberd.Mixfile do
      {:yconf, git: "https://github.com/processone/yconf", ref: "60e431a1f1e4504ccc9e329a9202b88c26b341ae"},
      {:jose, "~> 1.8"},
      {:idna, "~> 6.0"},
-     {:p1_acme, "~> 1.0"},
-     {:dependency, "~> 1.0", override: true}]
+     {:p1_acme, "~> 1.0"}]
     ++ cond_deps()
   end
 
